@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hi Res Card Art Browser</title>
+    <style>
+		body {
+		    background:#000;
+		    color:#fff;
+		    font-family:sans-serif;
+			text-align:center;
+		}
+        button {
+            display: inline-block;
+            padding: 15px;
+            position: absolute;
+        }
+
+        #nextButton {
+            right: 0;
+        }
+
+        #previousButton {
+            left: 0;
+        }
+
+        #buttons {
+            position: relative;
+            white-space: nowrap;
+            margin-bottom: 20px;
+        }
+
+        #imageContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #image_a img {
+            max-height: 70vh;
+            max-width: auto;
+        }
+    </style>
+    <script>
+        var currentImage = 1;
+        var touchstartX = 0;
+        var touchendX = 0;
+
+        function loadNextImage() {
+            if (currentImage !== 49) {
+                var imageElement = document.getElementById("image");
+                var imageAnchorElement = document.getElementById("image_a");
+
+                currentImage++;
+
+                var imageSrc = currentImage + ".jpg";
+
+                imageElement.src = imageSrc;
+                imageAnchorElement.href = imageSrc;
+                document.getElementById("previousButton").style.display = "block";
+            }
+
+            if (currentImage === 49) {
+                document.getElementById("nextButton").style.display = "none";
+            }
+        }
+
+        function loadPreviousImage() {
+            if (currentImage !== 1) {
+                var imageElement = document.getElementById("image");
+                var imageAnchorElement = document.getElementById("image_a");
+
+                currentImage--;
+
+                var imageSrc = currentImage + ".jpg";
+
+                imageElement.src = imageSrc;
+                imageAnchorElement.href = imageSrc;
+                document.getElementById("nextButton").style.display = "block";
+            }
+
+            if (currentImage === 1) {
+                document.getElementById("previousButton").style.display = "none";
+            }
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.keyCode === 37) {
+                // Left arrow key
+                loadPreviousImage();
+            } else if (event.keyCode === 39) {
+                // Right arrow key
+                loadNextImage();
+            }
+        });
+
+        document.addEventListener("touchstart", function(event) {
+            touchstartX = event.touches[0].clientX;
+        });
+
+        document.addEventListener("touchend", function(event) {
+            touchendX = event.changedTouches[0].clientX;
+            handleSwipeGesture();
+        });
+
+        function handleSwipeGesture() {
+            var swipeThreshold = 100;
+            var swipeDifference = touchendX - touchstartX;
+
+            if (swipeDifference > swipeThreshold) {
+                // Swiped right
+                loadPreviousImage();
+            } else if (swipeDifference < -swipeThreshold) {
+                // Swiped left
+                loadNextImage();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Hi Res Card Art Browser</h1>
+    <p>Click on the card for even higher resolution.<br/>You can use the arrow keys (right, left) or swipe left/right to navigate.</p>
+    <div id="buttons">
+        <button id="previousButton" onclick="loadPreviousImage()">Previous</button>
+        <button id="nextButton" onclick="loadNextImage()">Next</button>
+    </div>
+    <div id="imageContainer">
+        <a href="1.jpg" id="image_a" target="_blank"><img id="image" src="1.jpg" alt="Card Art"></a>
+    </div>
+</body>
+</html>
